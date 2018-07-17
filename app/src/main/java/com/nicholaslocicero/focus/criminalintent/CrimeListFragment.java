@@ -1,8 +1,8 @@
 package com.nicholaslocicero.focus.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
@@ -17,6 +17,7 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
   private RecyclerView mCrimeRecyclerView;
   private CrimeAdapter mAdapter;
+  private int position;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,11 +31,22 @@ public class CrimeListFragment extends Fragment {
     return view;
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    updateUI();
+  }
+
   private void updateUI() {
     CrimeLab crimeLab = CrimeLab.get(getActivity());
     List<Crime> crimes = crimeLab.getCrimes();
-    mAdapter = new CrimeAdapter(crimes);
-    mCrimeRecyclerView.setAdapter(mAdapter);
+
+    if (mAdapter == null) {
+      mAdapter = new CrimeAdapter(crimes);
+      mCrimeRecyclerView.setAdapter(mAdapter);
+    } else {
+      mAdapter.notifyItemChanged(position);
+    }
   }
 
   private class CrimeHolder extends RecyclerView.ViewHolder implements OnClickListener {
@@ -56,12 +68,15 @@ public class CrimeListFragment extends Fragment {
       mCrime = crime;
       mTitleTextView.setText(mCrime.getTitle());
       mDateTextView.setText(DateFormat.format("EEEE, MMM d, ''yy", mCrime.getDate()));
-      mSolvedImageView.setVisibility(crime.getSolved() ? View.VISIBLE : View.GONE);
+      mSolvedImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onClick(View v) {
-
+      Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+      CrimeLab crimeLab = CrimeLab.get(getActivity());
+      position = crimeLab.getCrimePosition(mCrime.getId());
+      startActivity(intent);
     }
   }
 
@@ -90,6 +105,7 @@ public class CrimeListFragment extends Fragment {
     public int getItemCount() {
       return mCrimes.size();
     }
+
   }
 
 }
