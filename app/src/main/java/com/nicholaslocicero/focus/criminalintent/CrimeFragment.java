@@ -45,7 +45,7 @@ public class CrimeFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_crime, container, false);
-
+    v.setPadding(16, 0, 0, 0);
     mTitleField = (EditText) v.findViewById(R.id.crime_title);
     mTitleField.setText(mCrime.getTitle());
     mTitleField.addTextChangedListener(new TextWatcher() {

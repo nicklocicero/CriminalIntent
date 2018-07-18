@@ -49,7 +49,7 @@ public class CrimeListFragment extends Fragment {
     }
   }
 
-  private class CrimeHolder extends RecyclerView.ViewHolder implements OnClickListener {
+  private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private Crime mCrime;
     private TextView mTitleTextView;
     private TextView mDateTextView;
@@ -73,7 +73,7 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onClick(View v) {
-      Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+      Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
       CrimeLab crimeLab = CrimeLab.get(getActivity());
       position = crimeLab.getCrimePosition(mCrime.getId());
       startActivity(intent);
